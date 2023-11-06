@@ -15,6 +15,7 @@ module.exports = function (RED) {
         node.protoFile = config.protoFile;
         node.localServer = config.localServer;
         node.ssl = config.ssl;
+        node.bypass = config.bypass;
         node.selfsigned = config.selfsigned;
         node.mutualTls = config.mutualTls;
         node.ca = config.ca;
@@ -60,9 +61,33 @@ module.exports = function (RED) {
 
             let credentials;
             if (node.ssl){
-                if (!node.selfsigned){
+                if(node.bypass)
+                {
+                    try 
+                    {   
+                        console.log("### Server.js - gRPC Client Bypass Server SSL Validation ###");
+                        credentials = grpc.credentials.createSsl(
+                            null,
+                            null,
+                            null,
+                            {
+                                checkServerIdentity: () => undefined,
+                                rejectUnauthorized: false
+                            }
+                        );
+                    } 
+                    catch (err) 
+                    {
+                        node.log("onInput" + err);
+                        console.log(err);
+                    }
+                }
+                else if (!node.selfsigned)
+                {
                     credentials = grpc.credentials.createSsl();
-                } else if (node.ca && node.chain && node.key){
+                } 
+                else if (node.ca && node.chain && node.key)
+                {
                     var ca =  utils.tempFile('ca.txt', node.ca)
                     var chain =  utils.tempFile('chain.txt', node.chain)
                     var key =  utils.tempFile('key.txt', node.key)
@@ -152,7 +177,7 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("grpc-server", gRpcServerNode, {});	
 
-    RED.httpAdmin.get("/node-red-contrib-grpc/*",function(req,res) {
+    RED.httpAdmin.get("/node-red-origami-grpc/*",function(req,res) {
       var options = {
           root: __dirname + '/scripts/',
           dotfiles: 'deny'
