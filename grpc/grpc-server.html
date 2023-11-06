@@ -1,7 +1,7 @@
-<script src="node-red-contrib-grpc/certsgen.js"></script>
-<script src="node-red-contrib-grpc/forge.min-0.7.0.js"></script>
+<script src="node-red-origami-grpc/certsgen.js"></script>
+<script src="node-red-origami-grpc/forge.min-0.7.0.js"></script>
 
-<!-- ***************** SERVER CONFIG *********************** -->
+<!-- ***************** SERVER CONFIG ********************** -->
 <script type="text/x-red" data-template-name="grpc-server">
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -23,12 +23,15 @@
         <label for="node-config-input-protoFile"> Proto File</label>
         <textarea id="node-config-input-protoFile" placeholder="Proto File" rows="20" style="width: 100%"></textarea>
     </div>
-
     <div class="form-row">
         <input type="checkbox" id="node-config-input-ssl" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-config-input-ssl" style="width: auto">SSL?</label>
     </div>
     <div id="ssl">
+        <div class="form-row">
+            <input type="checkbox" id="node-config-input-bypass" style="display: inline-block; width: auto; vertical-align: top;">
+            <label for="node-config-input-bypass" style="width: auto">Bypass Server Validation?</label>
+        </div>
         <div class="form-row">
             <input type="checkbox" id="node-config-input-selfsigned" style="display: inline-block; width: auto; vertical-align: top;">
             <label for="node-config-input-selfsigned" style="width: auto">Self-signed?</label>
@@ -100,6 +103,7 @@
             mutualTls: { value: false },
             ssl: { value: false },
             selfsigned: { value: false },
+            bypass: { value: false },
             localServer: { value : false },
         },
         icon: "grpc.svg",
@@ -109,7 +113,11 @@
         },
         oneditprepare: function (){
           var that = this;
-
+          
+          if (!this.bypass){
+            $('#bypass').hide();
+          }
+          
           if (!this.selfsigned){
             $('#selfsigned').hide();
           }
