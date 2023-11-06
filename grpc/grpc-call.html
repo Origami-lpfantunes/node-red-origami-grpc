@@ -16,6 +16,10 @@
         <label for="node-input-method" style="width: 110px;"><i class="fa fa-tag"></i> Method</label>
         <input type="text" id="node-input-method" placeholder="Method name">
     </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-bypass" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-bypass" style="width: auto">Bypass Server Validation?</label>
+    </div>
     <div id="mutualTls">
         <div class="form-row">
             <button id="keygen"">Generate bellow</button>
@@ -57,7 +61,8 @@
             name: {value:""},
             server: {type:"grpc-server",required:true},
             service: {value:"",required:true},
-            method: {value:"",required:true},
+            method: {value:"",required:true},          
+            bypass: {value:false},            
             chain: { value: '', validate: function(v){
               const mutualTls = $("#mutualTls").is(':visible');
               if (mutualTls){
@@ -92,7 +97,7 @@
                     $("#mutualTls").hide();
                 }
             })
-            
+                     
             $("#keygen").click(e => {
                 var config = RED.nodes.node($("#node-input-server").val());
 
