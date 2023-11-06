@@ -16,26 +16,51 @@ module.exports = function (RED) {
                 // overring config with msg content
                 config.service = config.service || msg.service;
                 config.method = config.method || msg.method;
-                
-                try {
+                config.bypass = config.bypass || msg.bypass;
+                        
+                try 
+                {
+                    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+                    
                     const REMOTE_SERVER = serverNode.server + ":" + serverNode.port;
                     //Create gRPC client
                     var proto =  serverNode.proto;
-                    if (serverNode.protoPackage) {
+                    if (serverNode.protoPackage) 
+                    {
                         proto = getByPath(serverNode.proto, serverNode.protoPackage);
                     }
-                    if (!proto[config.service]) {
+                    if (!proto[config.service]) 
+                    {
                         node.status({fill:"red",shape:"dot",text: "Service " + config.service + " not in proto file"});
-                    } else if (!proto[config.service].service[config.method]) {
+                    } 
+                    else if (!proto[config.service].service[config.method]) 
+                    {
                         node.status({fill:"red",shape:"dot",text: "Method " + config.method + " not in proto file for service " +  config.service });
-                    } else {
+                    } 
+                    else 
+                    {
                         node.status({});
                         node.chain = config.chain;
                         node.key = config.key;
 
                         let credentials;
-                        if (serverNode.ssl){
-                            if (!serverNode.selfsigned){
+                        if (serverNode.ssl)
+                        {
+                            if(serverNode.bypass)
+                            {
+                                    console.log("### call.js - gRPC Client Bypass Server SSL Validation ###");
+                                    credentials = grpc.credentials.createSsl(
+                                        null,
+                                        null,
+                                        null,
+                                        {
+                                            checkServerIdentity: () => undefined,
+                                            rejectUnauthorized: false
+                                        }
+                                    );                                
+                            }
+                            else if (!serverNode.selfsigned){
+                                console.log("### call.js - gRPC Client Self Signed ###"); console.log(serverNode.bypass);
                                 credentials = grpc.credentials.createSsl();
                             } else if (serverNode.caPath){
                                 if (serverNode.mutualTls){
