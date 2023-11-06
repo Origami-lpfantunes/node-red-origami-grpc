@@ -1,5 +1,5 @@
 
-# node-red-contrib-grpc
+# node-red-origami-grpc
 
 ## The all in one gRPC contribution package for Node-RED.
 
@@ -17,11 +17,11 @@ Provides server and client side implementation of gRPC.
 
 Run the following command in the root directory of your Node-RED install
 
-    npm install node-red-contrib-grpc
+    npm install node-red-origami-grpc
 
 Run the following command for global install
 
-    npm install -g node-red-contrib-grpc
+    npm install -g node-red-origami-grpc
 
 # Server Side
 
