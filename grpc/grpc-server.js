@@ -21,6 +21,7 @@ module.exports = function (RED) {
         node.ca = config.ca;
         node.chain = config.chain;
         node.key = config.key;
+        node.maxMessageSize = config.maxMessageSize;
 
         // read the package name from the protoFile
         var packageName = config.protoFile.match(new RegExp(/package\s+([^;="]*);/));
@@ -43,6 +44,19 @@ module.exports = function (RED) {
             done();
         });
     }	
+
+    // grpc-js defaults max_receive_message_length to 4MB and max_send_message_length
+    // to unlimited. This builds channel options so both client and server can raise
+    // (or remove) that receive-side limit, same idea as MaxReceiveMessageSize/
+    // MaxSendMessageSize on a .NET grpc channel.
+    function getChannelOptions(node) {
+        var mb = Number(node.maxMessageSize);
+        var maxSize = (mb && mb > 0) ? mb * 1024 * 1024 : -1; // -1 = unlimited
+        return {
+            'grpc.max_receive_message_length': maxSize,
+            'grpc.max_send_message_length': maxSize
+        };
+    }
 
     function createGRPCServer(node) {
         try {
@@ -104,7 +118,7 @@ module.exports = function (RED) {
            
             // If we start a local server
             if (node.localServer) {
-                var server = new grpc.Server();
+                var server = new grpc.Server(getChannelOptions(node));
                 // Parse the proto file
                 var services = proto;
                 if (node.protoPackage) {

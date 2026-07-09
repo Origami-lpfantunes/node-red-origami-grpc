@@ -33,6 +33,7 @@ It will start a gRPC server according to the server configuration (grpc-server n
 This node will be use to configure a local gRPC server with the following parameters :   
 * server ip : 0.0.0.0 (not editable since it's a local server)
 * server port : default value 5001;
+* Max Message Size (MB): 4 (default), -1 for unlimited;
 * protoFile : proto buffer definition of the services to provide;
 
 ## grpc-register-function node

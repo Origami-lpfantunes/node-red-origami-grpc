@@ -19,6 +19,10 @@
         <input type="checkbox" id="node-config-input-localServer" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-config-input-localServer" style="width: auto">Start a local server</label>
     </div>
+    <div class="form-row">
+        <label for="node-config-input-maxMessageSize" style="width: 180px;"><i class="fa fa-arrows-alt"></i> Max Message Size (MB)</label>
+        <input type="text" id="node-config-input-maxMessageSize" placeholder="4 (default), -1 for unlimited" style="width:120px">
+    </div>
 	  <div class="form-row">
         <label for="node-config-input-protoFile"> Proto File</label>
         <textarea id="node-config-input-protoFile" placeholder="Proto File" rows="20" style="width: 100%"></textarea>
@@ -105,6 +109,7 @@
             selfsigned: { value: false },
             bypass: { value: false },
             localServer: { value : false },
+            maxMessageSize: { value: 4, validate: RED.validators.number() },
         },
         icon: "grpc.svg",
         color: "#2DA6B0",

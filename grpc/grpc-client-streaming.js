@@ -5,6 +5,18 @@ module.exports = function (RED) {
     let getByPath = require('lodash.get');
     let fs = require("fs");
 
+    // grpc-js defaults max_receive_message_length to 4MB (max_send_message_length
+    // is unlimited by default). Raise/remove the receive limit via serverNode.maxMessageSize,
+    // same idea as MaxReceiveMessageSize/MaxSendMessageSize on a .NET grpc channel.
+    function getChannelOptions(serverNode) {
+        var mb = Number(serverNode && serverNode.maxMessageSize);
+        var maxSize = (mb && mb > 0) ? mb * 1024 * 1024 : -1; // -1 = unlimited
+        return {
+            'grpc.max_receive_message_length': maxSize,
+            'grpc.max_send_message_length': maxSize
+        };
+    }
+
     function gClientStreamingNode(config) {
         try {
             var node = this;
@@ -58,7 +70,8 @@ module.exports = function (RED) {
                             // Initialize connection
                             node.client = new proto[config.service](
                                 REMOTE_SERVER,
-                                credentials || grpc.credentials.createInsecure()
+                                credentials || grpc.credentials.createInsecure(),
+                                getChannelOptions(serverNode)
                             );
                             
                             if (!node.client[config.method]) {
