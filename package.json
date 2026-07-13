@@ -21,10 +21,13 @@
 		"gRpc"
 	],
 	"dependencies": {
-		"@grpc/proto-loader": "^0.5.5",
 		"@grpc/grpc-js": "^1.1.7",
+		"@grpc/proto-loader": "^0.8.1",
 		"lodash.get": "^4.4.2"
 	},
 	"author": "Julien Pal/Origami",
-	"license": "ISC"
+	"license": "ISC",
+	"allowScripts": {
+		"protobufjs@7.6.5": true
+	}
 }
