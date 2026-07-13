@@ -1,5 +1,5 @@
 {
-	"name": "node-red-origami-grpc",
+	"name": "@origami-hub/node-red-origami-grpc",
 	"version": "1.2.7",
 	"description": "gRpc Wrapper for NodeRed",
 	"main": "grpc.js",
