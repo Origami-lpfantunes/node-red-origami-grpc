@@ -17,11 +17,11 @@ Provides server and client side implementation of gRPC.
 
 Run the following command in the root directory of your Node-RED install
 
-    npm install node-red-origami-grpc
+    npm install @origami-hub/node-red-origami-grpc
 
 Run the following command for global install
 
-    npm install -g node-red-origami-grpc
+    npm install -g @origami-hub/node-red-origami-grpc
 
 # Server Side
 
